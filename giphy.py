@@ -26,7 +26,7 @@ def gotData(stuff):
 # In[111]:
 
 
-pprint.pprint(r.json()['data'][0]['images']['original']['url'])
+pprint.pprint(r.json()['data'][0]['images']['downsized_medium']['url'])
 
 
 # In[ ]:
