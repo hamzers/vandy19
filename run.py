@@ -1,4 +1,5 @@
 import requests
+import sys
 import pprint
 from flask import Flask, request
 from twilio.twiml.messaging_response import Message, MessagingResponse
@@ -11,38 +12,134 @@ auth_token = '6a42c296e68579a60d925ac8c39e61d3'
 client = Client(account_sid, auth_token)
 
 printMenu = 0
+giveChoice = 0
+menuChoice = -1
 app = Flask(__name__)
 
 
 @app.route('/sms', methods=['POST'])
 def sms():
+    global menuChoice
     global printMenu
-    number = request.form['From']
-    message_body = request.form['Body']
+    global giveChoice
+    if giveChoice == 0:
+        number = request.form['From']
+        menuChoice = request.form['Body']
 
     if printMenu == 0:
         resp = MessagingResponse()
         resp.message = (client.messages.create(
-            body="\nWelcome to MemeHotline!\n"
-                 "enter some keywords to find some memes",
+            body=" \n"
+                 "Welcome to Meme Hotline!\n"
+                 "Text \"1\" for Gif search\n"
+                 "Text \"2\" for //NEW MODE//\n"
+                 "Text \"0\" to Quit",
             from_='+14243214684',
             to='+14848853093'))
         printMenu = 1
     else:
-        payload = {'api_key': 'seXC2fGDNpVjAnTtg4qLhZiBvKqLTLzp', 'q': message_body, 'limit': 1}
-        r = requests.get('http://api.giphy.com/v1/gifs/search', params=payload)
-        print(r.url)
-        #pprint.pprint(r.json()['data'][0]['images'])
+        if menuChoice == "1":
+            if giveChoice == 1:
 
-        def gotData(stuff):
-            print(stuff.json())
+                try:
+                    number2 = request.form['From']
+                    message_body = request.form['Body']
 
-        resp = MessagingResponse()
-        resp.message = (client.messages.create(
-            body="Here you go!",
-            from_='+14243214684',
-            media_url=(r.json()['data'][0]['images']['downsized']['url']),
-            to='+14848853093'))
+                    if message_body != "0":
+                        payload = {'api_key': 'seXC2fGDNpVjAnTtg4qLhZiBvKqLTLzp', 'q': message_body, 'limit': 1}
+                        r = requests.get('http://api.giphy.com/v1/gifs/search', params=payload)
+                        print(r.url)
+
+                        def gotData(stuff):
+                            print(stuff.json())
+
+                        resp = MessagingResponse()
+                        resp.message = (client.messages.create(
+                            body="\n"
+                                 "Press 0 to quit to menu",
+                            from_='+14243214684',
+                            media_url=(r.json()['data'][0]['images']['downsized']['url']),
+                            to='+14848853093'))
+                    else:
+                        resp = MessagingResponse()
+                        resp.message = (client.messages.create(
+                            body=" \n"
+                                 "Returning to menu\n"
+                                 "Type anything to start",
+                            from_='+14243214684',
+                            to='+14848853093'))
+                        printMenu = 0
+                        giveChoice = 0
+                except IndexError:
+                    resp = MessagingResponse()
+                    resp.message = (client.messages.create(
+                        body="\n"
+                             "I can't find any gifs\n"
+                             "with that keyword,\n"
+                             "Try Again!",
+                        from_='+14243214684',
+                        to='+14848853093'))
+            else:
+                resp = MessagingResponse()
+                resp.message = (client.messages.create(
+                    body=" \n"
+                         "Welcome to Gif Search!\n"
+                         "Type some keywords and\n"
+                         "see what you get!",
+                    from_='+14243214684',
+                    to='+14848853093'))
+                giveChoice = 1
+        elif menuChoice == "2":
+            if giveChoice == 1:
+
+                number = request.form['From']
+                message_body = request.form['Body']
+
+                if message_body != "0":
+                    # Write code for something else
+
+                    resp = MessagingResponse()
+                    resp.message = (client.messages.create(
+                        body=" \n"
+                             "Default Message",
+                        from_='+14243214684',
+                        to='+14848853093'))
+                else:
+                    resp = MessagingResponse()
+                    resp.message = (client.messages.create(
+                        body="\n"
+                             "Returning to menu\n"
+                             "Type anything to start",
+                        from_='+14243214684',
+                        to='+14848853093'))
+                    printMenu = 0
+                    giveChoice = 0
+            else:
+                resp = MessagingResponse()
+                resp.message = (client.messages.create(
+                    body="\n"
+                         "Welcome to ____",
+                    from_='+14243214684',
+                    to='+14848853093'))
+                giveChoice = 1
+        elif menuChoice == "0":
+            resp = MessagingResponse()
+            resp.message = (client.messages.create(
+                body="\n"
+                     "Meme sesh quit\n"
+                     "Type anything to restart",
+                from_='+14243214684',
+                to='+14848853093'))
+            printMenu = 0
+        else:
+            resp = MessagingResponse()
+            resp.message = (client.messages.create(
+                body="\n"
+                     "That was not an option\n"
+                     "Type anything to restart",
+                from_='+14243214684',
+                to='+14848853093'))
+            printMenu = 0
     return str(resp)
 
 
