@@ -45,10 +45,10 @@ def sms():
             body=" \n"
                  "Welcome to Meme Hotline!\n"
                  "Text \"1\" for Gif search\n"
-                 "Text \"2\" for //NEW MODE//\n"
+                 "Text \"2\" for Memeify\n"
                  "Text \"0\" to Quit",
             from_='+14243214684',
-            to='+19199856240'))
+            to='+14848853093'))
         printMenu = 1
     else:
         if menuChoice == "1":
@@ -72,7 +72,7 @@ def sms():
                                  "Press 0 to quit to menu",
                             from_='+14243214684',
                             media_url=(r.json()['data'][0]['images']['downsized']['url']),
-                            to='+19199856240'))
+                            to='+14848853093'))
                     else:
                         resp = MessagingResponse()
                         resp.message = (client.messages.create(
@@ -80,7 +80,7 @@ def sms():
                                  "Returning to menu\n"
                                  "Type anything to start",
                             from_='+14243214684',
-                            to='+19199856240'))
+                            to='+14848853093'))
                         printMenu = 0
                         giveChoice = 0
                 except IndexError:
@@ -91,7 +91,7 @@ def sms():
                              "with that keyword,\n"
                              "Try Again!",
                         from_='+14243214684',
-                        to='+19199856240'))
+                        to='+14848853093'))
             else:
                 resp = MessagingResponse()
                 resp.message = (client.messages.create(
@@ -100,36 +100,33 @@ def sms():
                          "Type some keywords and\n"
                          "see what you get!",
                     from_='+14243214684',
-                    to='+19199856240'))
+                    to='+14848853093'))
                 giveChoice = 1
         elif menuChoice == "2":
             if giveChoice == 1:
-
                 resp = MessagingResponse()
+
                 try:
                     if request.values['NumMedia'] != '0':
 
                         # Use the message SID as a filename.
                         filename = request.values['MessageSid'] + '.png'
                         with open('./Uploads/input.jpg', 'wb') as f:
-                            print("gets here 0")
                             image_url = request.values['MediaUrl0']
                             f.write(requests.get(image_url).content)
-                            print("Gets here 1")
                             eyefinder('./Uploads/input.jpg')
-                            print("Gets here 2")
                             boost()
                             scp.put('outfile.jpg', '~/public_html/')
 
                             resp = MessagingResponse()
                             resp.message = (client.messages.create(
                                 body="\n"
-                                     "Press 0 to quit to menu",
+                                     "Type anything to continue",
                                 from_='+14243214684',
                                 media_url='https://www.shodor.org/~hamzas/outfile.jpg',
-                                to='+19199856240'))
-                            #enter cool stuff here having to do with the image inside the Uploads folder
-                            #Then output the product back to the user
+                                to='+14848853093'))
+                            printMenu = 0
+                            giveChoice = 0
                     else:
                         resp.message("Try sending a picture message.")
                 except IOError:
@@ -138,19 +135,19 @@ def sms():
                 resp = MessagingResponse()
                 resp.message = (client.messages.create(
                     body="\n"
-                         "Welcome to Meme picture\n"
-                         "Enter sumn funny",
+                         "Welcome to Memify\n"
+                         "Jpg or Png only please\n",
                     from_='+14243214684',
-                    to='+19199856240'))
+                    to='+14848853093'))
                 giveChoice = 1
         elif menuChoice == "0":
             resp = MessagingResponse()
             resp.message = (client.messages.create(
                 body="\n"
-                     "Meme sesh quit\n"
+                     "Session quit\n"
                      "Type anything to restart",
                 from_='+14243214684',
-                to='+19199856240'))
+                to='+14848853093'))
             printMenu = 0
         else:
             resp = MessagingResponse()
@@ -159,7 +156,7 @@ def sms():
                      "That was not an option\n"
                      "Type anything to restart",
                 from_='+14243214684',
-                to='+19199856240'))
+                to='+14848853093'))
             printMenu = 0
     return str(resp)
 
