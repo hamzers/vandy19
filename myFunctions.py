@@ -6,12 +6,12 @@ import numpy as np
 import scipy.misc
 
 
-def eyefinder():
+def eyefinder(filename):
     face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml') 
     eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')  
     
     # camera catch
-    img = cv2.imread('input.jpg') 
+    img = cv2.imread(filename)
 
     scale_factor = .2
     width = int(img.shape[1] * scale_factor)
@@ -53,7 +53,8 @@ def eyefinder():
 
     
 
-    cv2.destroyAllWindows()  
+    cv2.destroyAllWindows()
+    #return img
 
 def boost():
     img = Image.open('tmp.jpg')

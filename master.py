@@ -1,4 +1,4 @@
 from myFunctions import eyefinder, boost
 
-eyefinder()
-boost()
+
+boost(eyefinder('input.jpg'))
