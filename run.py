@@ -17,7 +17,7 @@ menuChoice = -1
 app = Flask(__name__)
 
 
-@app.route('/sms', methods=['POST'])
+@app.route('/sms', methods=['GET', 'POST'])
 def sms():
     global menuChoice
     global printMenu
@@ -92,33 +92,30 @@ def sms():
         elif menuChoice == "2":
             if giveChoice == 1:
 
-                number = request.form['From']
-                message_body = request.form['Body']
+                resp = MessagingResponse()
+                try:
+                    if request.values['NumMedia'] != '0':
 
-                if message_body != "0":
-                    # Write code for something else
+                        # Use the message SID as a filename.
+                        filename = request.values['MessageSid'] + '.png'
+                        with open('./Uploads/{}'.format(filename), 'wb') as f:
+                            image_url = request.values['MediaUrl0']
+                            f.write(requests.get(image_url).content)
 
-                    resp = MessagingResponse()
-                    resp.message = (client.messages.create(
-                        body=" \n"
-                             "Default Message",
-                        from_='+14243214684',
-                        to='+14848853093'))
-                else:
-                    resp = MessagingResponse()
-                    resp.message = (client.messages.create(
-                        body="\n"
-                             "Returning to menu\n"
-                             "Type anything to start",
-                        from_='+14243214684',
-                        to='+14848853093'))
-                    printMenu = 0
-                    giveChoice = 0
+
+                            #enter cool stuff here having to do with the image inside the Uploads folder
+                            #Then output the product back to the user
+                        resp.message("very funny, thanks")
+                    else:
+                        resp.message("Try sending a picture message.")
+                except Exception:
+                    resp.message("Try sending a picture message.")
             else:
                 resp = MessagingResponse()
                 resp.message = (client.messages.create(
                     body="\n"
-                         "Welcome to ____",
+                         "Welcome to Meme picture\n"
+                         "Enter sumn funny",
                     from_='+14243214684',
                     to='+14848853093'))
                 giveChoice = 1
