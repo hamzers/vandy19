@@ -1,6 +1,6 @@
 import requests
 import sys
-import pprint
+from PIL import Image
 from flask import Flask, request
 from twilio.twiml.messaging_response import Message, MessagingResponse
 from twilio.rest import Client
@@ -101,7 +101,7 @@ def sms():
                         with open('./Uploads/{}'.format(filename), 'wb') as f:
                             image_url = request.values['MediaUrl0']
                             f.write(requests.get(image_url).content)
-
+                            input = PIL.Image.open('./Uploads/{}'.format(filename))
 
                             #enter cool stuff here having to do with the image inside the Uploads folder
                             #Then output the product back to the user
