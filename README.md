@@ -1,4 +1,4 @@
-# Gif Searcher - VandyHacks 2019 Project
+# The Meme Hotline - VandyHacks 2019 Project
 By: Hamza, Ethan, Ryan
 <img align="right" src="Hacker.gif">
 
